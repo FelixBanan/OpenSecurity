@@ -1,5 +1,5 @@
 
-require("advancedLua")
+
 local component = require("component")
 local computer = require("computer")
 local image = require("image")
