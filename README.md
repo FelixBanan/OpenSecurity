@@ -9,7 +9,7 @@
 Второй способ:
 1. Установить MineOS. (http://computercraft.ru/topic/2195-mineos/)
 2. Выйти в Shell.
-3. Прописать команду [inline]pastebin run NBZQaWnw[/inline].
+3. Прописать команду pastebin run NBZQaWnw
 4. Прописать OS и на рабочем столе будет иконка OpenSecurity.
 
 Если вы подключите не сразу все три блока ошибок не будет.
