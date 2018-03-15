@@ -9,7 +9,7 @@ local MineOSInterface = require("MineOSInterface")
 local redstone = component.redstone
 local event = require("event")
 local resourcesPath = MineOSCore.getCurrentApplicationResourcesDirectory()
-local FBAPI = dofile(resourcesPath .. "FBAPI.lua")
+local FBAPI = require("FBAPI")
 ----------------------------------------------------------------------------------------------------------------
 
 local module = {}
