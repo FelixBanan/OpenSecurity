@@ -108,6 +108,7 @@ else
 GUI.error("Вы не ввели данные.")
 end
 end
+
 function FBAPI.magcheck()
 FBAPI.clearGlobal()
 local component = require("component")

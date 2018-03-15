@@ -9,55 +9,20 @@ local MineOSInterface = require("MineOSInterface")
 local component = require("component")
 local redstone = component.redstone
 local event = require("event")
+local resourcesPath = MineOSCore.getCurrentApplicationResourcesDirectory()
+local FBAPI = dofile(resourcesPath .. "FBAPI.lua")
 ----------------------------------------------------------------------------------------------------------------
 
 local module = {}
 module.name = "Mag Reader"
 
-
-local function checkPidor()
-
-
-    if component.isAvailable("OSMAGReader") then
-      magcheck = "zaebis"
-    elseif component.isAvailable("os_magreader") then
-      magcheck = "zaebis"
-    else
-      magcheck = "nezaebis"
-    end
-
-    if magcheck == "zaebis" then
-      check = "zaebis"
-    elseif magcheck == "nezaebis" then
-      check = "pizdec"
-    end
-
-end
-
-
 ----------------------------------------------------------------------------------------------------------------
-
-local function mag()
-  while true do
-    local output = { event.pull() }
-    if output[1] == "magData" then
-      if output[4] == password then
-        redstone.setOutput(side, 15)
-        os.sleep(red)
-      else
-        os.sleep(red)
-      end
-      redstone.setOutput(side, 0)
-    elseif output[1] == "key_down" and output[4] == 28 then
-      break
-    end
-  end
-end
 
 module.onTouch = function()
 window.contentContainer:deleteChildren()
-checkPidor()
-if check == "zaebis" then
+FBAPI.magcheck()
+if checkresult == true then
+FBAPI.clearGlobal()
   local container = window.contentContainer:addChild(GUI.container(1, 1, window.contentContainer.width, window.contentContainer.height))
 
   local layout = container:addChild(GUI.layout(1, 1, container.width, window.contentContainer.height, 3, 1))
@@ -73,15 +38,13 @@ layout:setCellPosition(2, 1, layout:addChild(GUI.input(1, 1, 30, 3, 0xFFFFFF, 0x
 side = tonumber(text)
 end
 layout:setCellPosition(2, 1, layout:addChild(GUI.roundedButton(2, 6, 30, 3, 0xBBBBBB, 0xFFFFFF, 0x999999, 0xFFFFFF, "Включить MagReader"))).onTouch = function()
-if password and red and side then
-mag()
-else
-GUI.error("Вы не ввели данные")
-end
+FBAPI.magread(password, side, red)
+FBAPI.clearGlobal()
 end
 
 layout:setCellPosition(2, 1, layout:addChild(GUI.label(30, 1, 30, 3, 0x00, "Enter для выключения программы.")))
-elseif check == "pizdec" then
+elseif checkresult == false then
+FBAPI.clearGlobal()
 GUI.error("Вы не подключили MagReader.")
 end
 end

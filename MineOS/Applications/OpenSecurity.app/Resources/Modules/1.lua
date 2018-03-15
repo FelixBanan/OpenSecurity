@@ -9,41 +9,19 @@ local buffer = require("doubleBuffering")
 local MineOSInterface = require("MineOSInterface")
 local redstone = component.redstone
 local event = require("event")
+local resourcesPath = MineOSCore.getCurrentApplicationResourcesDirectory()
+local FBAPI = dofile(resourcesPath .. "FBAPI.lua")
 ----------------------------------------------------------------------------------------------------------------
 
 local module = {}
 module.name = "RFID Reader"
-
-
-local function checkPidor()
-
-
-    if component.isAvailable("OSRFIDReader") then
-    reader = component.OSRFIDReader
-    readercheck = "zaebis"
-    elseif component.isAvailable("os_rfidreader") then
-    reader = component.os_rfidreader
-    readercheck = "zaebis"
-    else
-    readercheck = "nezaebis"
-    end
-
-    if readercheck == "zaebis" then
-     check = "zaebis"
-    elseif readercheck == "nezaebis" then
-     check = "pizdec"
-    end
-
-end
-
-
 ----------------------------------------------------------------------------------------------------------------
 
 module.onTouch = function()
 window.contentContainer:deleteChildren()
-checkPidor()
-if check == "zaebis" then
-
+FBAPI.rfidcheck()
+if checkresult == true then
+FBAPI.clearGlobal()
   local container = window.contentContainer:addChild(GUI.container(1, 1, window.contentContainer.width, window.contentContainer.height))
   local layout = container:addChild(GUI.layout(1, 1, container.width, window.contentContainer.height, 3, 1))
 
@@ -62,30 +40,11 @@ end
 
 layout:setCellPosition(2, 1, layout:addChild(GUI.label(30, 1, 30, 3, 0x00, "Enter для выключения программы.")))
 
-local function reads()
-while true do
-local eventType, _, _, key_code = event.pull(0)
-if eventType == "key_down" and key_code == 28 then
-  break
-else
-  local player = reader.scan()[1]
-  if player and player.data == password2 and player.range <= range then
-    redstone.setOutput(side, 15)
-  else
-    redstone.setOutput(side, 0)
-  end
-end
-end
-end
-
 layout:setCellPosition(2, 1, layout:addChild(GUI.roundedButton(2, 6, 30, 3, 0xBBBBBB, 0xFFFFFF, 0x999999, 0xFFFFFF, "Включить RFIDSearch"))).onTouch = function()
-if password2 and range then
-reads()
-else
-GUI.error("Вы не ввели пароль или(и) радиус")
+FBAPI.rfidread(password2, range, side)
 end
-end
-elseif check == "pizdec" then
+elseif checkresult == false then
+FBAPI.clearGlobal()
 GUI.error("Вы не подключили RfidReader.")
 end
 
