@@ -51,14 +51,14 @@ end
 
 local comboBox = layout:setCellPosition(2, 1, layout:addChild(GUI.comboBox(1, 1, 30, 3, 0xFFFFFF, 0x444444, 0xCCCCCC, 0x888888)))
 comboBox:addItem("Заблокировать перезапись").onTouch = function()
-lock = "true"
+lock = true
 end
 comboBox:addItem("Не блокировать перезапись").onTouch = function()
-lock = "false"
+lock = false
 end
 
 layout:setCellPosition(2, 1, layout:addChild(GUI.roundedButton(2, 6, 30, 3, 0xBBBBBB, 0xFFFFFF, 0x999999, 0xFFFFFF, "Записать"))).onTouch = function()
-FBAPI.cardread(name, password, lock)
+FBAPI.cardread(login, password, lock)
 FBAPI.clearGlobal()
 end
 
