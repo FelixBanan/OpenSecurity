@@ -29,7 +29,7 @@ local function loadModules()
     if success then
       local success, reason = pcall(success, mainContainer, window, localization)
       if success then
-        window.tabBar:addItem(reason.name).onTouch = function()
+        window.tabBar:addItem(success.name).onTouch = function()
         reason.onTouch()
       end
     else
