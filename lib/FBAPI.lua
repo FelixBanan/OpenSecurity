@@ -8,6 +8,10 @@ writercheck = nil
 mag = nil
 magcheck = nil
 checkresult = nil
+entity = nil
+entitycheck = nil
+scan = nil
+side = nil
 end
 
 function FBAPI.rfidcheck()
@@ -22,15 +26,6 @@ local component = require("component")
     else
     readercheck = false
     end
-
-    if readercheck == true then
-	 readercheck = nil
-     checkresult = true
-    elseif readercheck == false then
-	 readercheck = nil
-     checkresult = false
-    end
-
 end
 
 function FBAPI.rfidread(password, range, side)
@@ -41,7 +36,7 @@ FBAPI.rfidcheck()
 local redstone = require("component").redstone
 local event = require("event")
 
-if checkresult == true then
+if readercheck == true then
 while true do
 local eventType, _, _, key_code = event.pull(0)
 if eventType == "key_down" and key_code == 28 then
@@ -55,6 +50,8 @@ else
   end
 end
 end
+else
+GUI.error("Вы не подключили блок.")
 end
 else
 GUI.error("Вы не ввели данные.")
@@ -64,7 +61,8 @@ end
 function FBAPI.cardcheck()
 FBAPI.clearGlobal()
 local component = require("component")
-    if component.isAvailable("os_cardwriter") then
+
+if component.isAvailable("os_cardwriter") then
      writer = component.os_cardwriter
      writercheck = true
     elseif component.isAvailable("OSCardWriter") then
@@ -73,23 +71,16 @@ local component = require("component")
     else
      writercheck = false
     end
-
-    if writercheck == true then
-	 writercheck = nil
-     checkresult = true
-    elseif writercheck == false then
-	 writercheck = nil
-     checkresult = false
 end
 
-end
+
 
 function FBAPI.cardread(name, password, lock)
 FBAPI.clearGlobal()
 local GUI = require("GUI")
-if name and password and lock then
+if name and password then
 FBAPI.cardcheck()
-
+if writercheck == true then
 if lock == true then
 success = writer.write(password, name, true)
 elseif lock == false then
@@ -105,10 +96,12 @@ else
 GUI.error("Вы не вставили карту или(и) не ввели данные.")
 end
 else
+GUI.error("Вы не подключили блок.")
+end
+else
 GUI.error("Вы не ввели данные.")
 end
 end
-
 function FBAPI.magcheck()
 FBAPI.clearGlobal()
 local component = require("component")
@@ -119,15 +112,6 @@ local component = require("component")
     else
       magcheck = false
     end
-
-    if magcheck == true then
-      checkresult = true
-	  magcheck = nil
-    elseif magcheck == false then
-	  magcheck = nil
-      checkresult = false
-    end
-
 end
 
 function FBAPI.magread(password, side, sec)
@@ -156,6 +140,38 @@ GUI.error("Вы не ввели данные.")
 end
 end
 
+function FBAPI.entitycheck()
+local component = require("component")
+if component.isAvailable("os_entdetector") then
+     entity = component.os_entdetector
+     entitycheck = true
+    elseif component.isAvailable("OSEntDetector") then
+     entity = component.OSEntDetector
+     entitycheck = true
+    else
+     entitycheck = false
+    end
+end
+
+
+
+function FBAPI.entitydetect()
+FBAPI.clearGlobal()
+FBAPI.entitycheck()
+local GUI = require("GUI")
+
+
+scan = entity.scanPlayers(10)
+for l,player in pairs(scan) do
+GUI.error(player.name)
+GUI.error(player.range)
+local resourcesPath = MineOSCore.getCurrentApplicationResourcesDirectory()
+file = io.open(resourcesPath .. "entitydetector.txt", w)
+file:write(playerName)
+file:close()
+end
+
+end
 
 
 return FBAPI
