@@ -14,7 +14,7 @@ local MineOSInterface = require("MineOSInterface")
 ----------------------------------------------------------------------------------------------------------------
 
 local resourcesPath = MineOSCore.getCurrentApplicationResourcesDirectory()
-local modulesPath = resourcesPath .. "Modules/"
+local modulesPath = resourcesPath .. "Resources/Modules/"
 
 local mainContainer, window = MineOSInterface.addWindow(MineOSInterface.tabbedWindow(1, 1, 90, 30))
 
