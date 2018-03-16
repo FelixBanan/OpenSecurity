@@ -8,7 +8,6 @@ local buffer = require("doubleBuffering")
 local MineOSInterface = require("MineOSInterface")
 local redstone = component.redstone
 local event = require("event")
-local resourcesPath = MineOSCore.getCurrentApplicationResourcesDirectory()
 local FBAPI = require("FBAPI")
 ----------------------------------------------------------------------------------------------------------------
 
