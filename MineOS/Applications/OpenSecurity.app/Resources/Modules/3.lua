@@ -19,7 +19,22 @@ module.name = "Mag Reader"
 
 module.onTouch = function()
 window.contentContainer:deleteChildren()
-FBAPI.magcheck()
+local component = require("component")
+    if component.isAvailable("OSMAGReader") then
+      magcheck = true
+    elseif component.isAvailable("os_magreader") then
+      magcheck = true
+    else
+      magcheck = false
+    end
+
+    if magcheck == true then
+      checkresult = true
+	  magcheck = nil
+    elseif magcheck == false then
+	  magcheck = nil
+      checkresult = false
+    end
 if checkresult == true then
 FBAPI.clearGlobal()
   local container = window.contentContainer:addChild(GUI.container(1, 1, window.contentContainer.width, window.contentContainer.height))

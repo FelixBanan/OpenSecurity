@@ -18,7 +18,24 @@ module.name = "RFID Reader"
 
 module.onTouch = function()
 window.contentContainer:deleteChildren()
-FBAPI.rfidcheck()
+local component = require("component")
+    if component.isAvailable("OSRFIDReader") then
+    reader = component.OSRFIDReader
+    readercheck = true
+    elseif component.isAvailable("os_rfidreader") then
+    reader = component.os_rfidreader
+    readercheck = true
+    else
+    readercheck = false
+    end
+
+    if readercheck == true then
+	 readercheck = nil
+     checkresult = true
+    elseif readercheck == false then
+	 readercheck = nil
+     checkresult = false
+    end
 if checkresult == true then
 FBAPI.clearGlobal()
   local container = window.contentContainer:addChild(GUI.container(1, 1, window.contentContainer.width, window.contentContainer.height))

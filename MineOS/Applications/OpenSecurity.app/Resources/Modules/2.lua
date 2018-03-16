@@ -15,10 +15,26 @@ local module = {}
 module.name = "Card Writer"
 
 ----------------------------------------------------------------------------------------------------------------
-
 module.onTouch = function()
 window.contentContainer:deleteChildren()
-FBAPI.cardcheck()
+local component = require("component")
+    if component.isAvailable("os_cardwriter") then
+     writer = component.os_cardwriter
+     writercheck = true
+    elseif component.isAvailable("OSCardWriter") then
+     writer = component.OSCardWriter
+     writercheck = true
+    else
+     writercheck = false
+    end
+
+    if writercheck == true then
+	 writercheck = nil
+     checkresult = true
+    elseif writercheck == false then
+	 writercheck = nil
+     checkresult = false
+end
 if checkresult == true then
 FBAPI.clearGlobal()
 
@@ -48,7 +64,7 @@ end
 
 elseif checkresult == false then
 FBAPI.clearGlobal()
-GUI.error("Вы не подключили RfidReader.")
+GUI.error("Вы не подключили Card Writer.")
 end
 
 end
