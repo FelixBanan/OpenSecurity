@@ -12,7 +12,7 @@ local userSettings = system.getUserSettings()
 
 --------------------------------------------------------------------------------
 
-module.name = localization.infoname
+module.name = localization.settings
 module.margin = 0
 module.onTouch = function()
 

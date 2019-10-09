@@ -4,7 +4,7 @@ local paths = require("Paths")
 local system = require("System")
 local FBAPI = require("FBAPI")
 local filesystem = require("filesystem")
-local settings = filesystem.readTable(paths.user.applicationData .. "OpenSecurity/settings.cfg")
+local component = require("component")
 
 local module = {}
 
@@ -35,6 +35,8 @@ module.onTouch = function()
     redstoneside.disabled = true
     button.disabled = true
   end
+
+  local settings = filesystem.readTable(paths.user.applicationData .. "OpenSecurity/settings.cfg")
 
   if component.isAvailable("OSMAGReader") then
     local check = nil
@@ -71,6 +73,7 @@ module.onTouch = function()
       GUI.alert(localization.BlockConnectRolldoorController);
     end
   end
+
 
   button.onTouch = function()
 

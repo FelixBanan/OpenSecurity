@@ -1,10 +1,10 @@
 
 local GUI = require("GUI")
-local screen = require("Screen")
 local paths = require("Paths")
 local system = require("System")
 local FBAPI = require("FBAPI")
 local filesystem = require("filesystem")
+local component = require("component")
 
 local module = {}
 
@@ -33,10 +33,12 @@ module.onTouch = function()
 
   local function disableForm()
     password.disabled = true
-    timer.disabled = true
+    range.disabled = true
     redstoneside.disabled = true
     button.disabled = true
   end
+
+  local settings = filesystem.readTable(paths.user.applicationData .. "OpenSecurity/settings.cfg")
 
   if component.isAvailable("OSRFIDReader") then
     local check = nil
@@ -76,7 +78,6 @@ module.onTouch = function()
 
   button.onTouch = function()
 
-    local settings = filesystem.readTable(paths.user.applicationData .. "OpenSecurity/settings.cfg")
     local result = FBAPI.rfidread(password.text, range.value, redstoneside.value, settings)
 
     if result == "settings" then
