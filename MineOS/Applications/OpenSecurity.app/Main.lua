@@ -3,20 +3,17 @@
 local component = require("component")
 local computer = require("computer")
 local image = require("image")
-local buffer = require("doubleBuffering")
 local GUI = require("GUI")
+local system = require("System")
 local fs = require("filesystem")
 local unicode = require("unicode")
-local MineOSPaths = require("MineOSPaths")
-local MineOSCore = require("MineOSCore")
-local MineOSInterface = require("MineOSInterface")
-
+local paths = require("paths")
 ----------------------------------------------------------------------------------------------------------------
 
-local resourcesPath = MineOSCore.getCurrentApplicationResourcesDirectory()
+local resourcesPath = paths.user.applications .. "OpenSecurity.app"
 local modulesPath = resourcesPath .. "Modules/"
 
-local mainContainer, window = MineOSInterface.addWindow(MineOSInterface.tabbedWindow(1, 1, 90, 30))
+local mainContainer, window = system.addWindow(GUI.tabbedWindow(1, 1, 90, 30))
 
 ----------------------------------------------------------------------------------------------------------------
 

@@ -1,177 +1,173 @@
 local FBAPI = {}
 
-function FBAPI.clearGlobal()
-reader = nil
-readercheck = nil
-writer = nil
-writercheck = nil
-mag = nil
-magcheck = nil
-checkresult = nil
-entity = nil
-entitycheck = nil
-scan = nil
-side = nil
-end
-
 function FBAPI.rfidcheck()
-FBAPI.clearGlobal()
-local component = require("component")
-    if component.isAvailable("OSRFIDReader") then
-    reader = component.OSRFIDReader
-    readercheck = true
-    elseif component.isAvailable("os_rfidreader") then
-    reader = component.os_rfidreader
-    readercheck = true
-    else
-    readercheck = false
-    end
-end
 
-function FBAPI.rfidread(password, range, side)
-FBAPI.clearGlobal()
-local GUI = require("GUI")
-if password and range and side then
-FBAPI.rfidcheck()
-local redstone = require("component").redstone
-local event = require("event")
+  local component = require("component")
 
-if readercheck == true then
-while true do
-local eventType, _, _, key_code = event.pull(0)
-if eventType == "key_down" and key_code == 28 then
-  break
-else
-  local player = reader.scan()[1]
-  if player and player.data == password and player.range <= range then
-    redstone.setOutput(side, 15)
+  if component.isAvailable("OSRFIDReader") then
+    return "OSRFIDReader"
+  elseif component.isAvailable("os_rfidreader") then
+    return "os_rfidreader"
   else
-    redstone.setOutput(side, 0)
+    return false
   end
-end
-end
-else
-GUI.error("Вы не подключили блок.")
-end
-else
-GUI.error("Вы не ввели данные.")
-end
+
 end
 
-function FBAPI.cardcheck()
-FBAPI.clearGlobal()
-local component = require("component")
+function FBAPI.redstonecheck()
+  local component = require("component")
 
-if component.isAvailable("os_cardwriter") then
-     writer = component.os_cardwriter
-     writercheck = true
-    elseif component.isAvailable("OSCardWriter") then
-     writer = component.OSCardWriter
-     writercheck = true
+  if component.isAvailable("redstone") then
+    return true
+  else
+    return false
+  end
+
+end
+
+function FBAPI.rfidread(password, range, side, settings)
+
+  if password ~= "" and range and side then
+
+    local component = require("component")
+
+    if component.isAvailable("OSRFIDReader") then
+      local reader = component.OSRFIDReader
+      FBAPI.rfidwhile(reader, password, range, side, settings)
+    elseif component.isAvailable("os_rfidreader") then
+      local reader = component.os_rfidreader
+      FBAPI.rfidwhile(reader, password, range, side, settings)
     else
-     writercheck = false
+      return "block"
     end
+
+  else
+    return "settings"
+  end
+
 end
 
+function FBAPI.rfidwhile(reader, password, range, side, settings)
 
-
-function FBAPI.cardread(name, password, lock)
-FBAPI.clearGlobal()
-local GUI = require("GUI")
-if name and password then
-FBAPI.cardcheck()
-if writercheck == true then
-if lock == true then
-success = writer.write(password, name, true)
-elseif lock == false then
-success = writer.write(password, name, false)
-else
-success = writer.write(password, name, false)
-end
-
-
-if success then
-GUI.error("Успешно!")
-else
-GUI.error("Вы не вставили карту или(и) не ввели данные.")
-end
-else
-GUI.error("Вы не подключили блок.")
-end
-else
-GUI.error("Вы не ввели данные.")
-end
-end
-function FBAPI.magcheck()
-FBAPI.clearGlobal()
-local component = require("component")
-    if component.isAvailable("OSMAGReader") then
-      magcheck = true
-    elseif component.isAvailable("os_magreader") then
-      magcheck = true
-    else
-      magcheck = false
-    end
-end
-
-function FBAPI.magread(password, side, sec)
-FBAPI.clearGlobal()
-local GUI = require("GUI")
-if password and side and sec then
-FBAPI.magcheck()
-local event = require("event")
-local redstone = require("component").redstone
+  local event = require("event")
+  local component = require("component")
+  
   while true do
-    local output = { event.pull() }
-    if output[1] == "magData" then
-      if output[4] == password then
-        redstone.setOutput(side, 15)
-        os.sleep(sec)
-      else
-        os.sleep(sec)
+    local eventType, _, _, key_code = event.pull(0)
+    if eventType == "key_down" and key_code == 28 then
+      if settings["redstone"] == true and component.isAvailable("redstone") then
+        component.redstone.setOutput(side, 0)
       end
-      redstone.setOutput(side, 0)
-    elseif output[1] == "key_down" and output[4] == 28 then
+      if settings["doorcontroller"] == true and component.isAvailable("os_doorcontroller") then
+        component.os_doorcontroller.close()
+      end
+      if settings["rolldoorcontroller"] == true and component.isAvailable("os_rolldoorcontroller") then
+        component.os_rolldoorcontroller.close()
+      end
       break
+    else
+      local player = reader.scan()[1]
+      if player and player.data == password and player.range <= range then
+        if settings["redstone"] == true and component.isAvailable("redstone") then
+          component.redstone.setOutput(side, 15)
+        end
+        if settings["doorcontroller"] == true and component.isAvailable("os_doorcontroller") then
+          component.os_doorcontroller.open()
+        end
+        if settings["rolldoorcontroller"] == true and component.isAvailable("os_rolldoorcontroller") then
+          component.os_rolldoorcontroller.open()
+        end
+      else
+        if settings["redstone"] == true and component.isAvailable("redstone") then
+          component.redstone.setOutput(side, 0)
+        end
+        if settings["doorcontroller"] == true and component.isAvailable("os_doorcontroller") then
+          component.os_doorcontroller.close()
+        end
+        if settings["rolldoorcontroller"] == true and component.isAvailable("os_rolldoorcontroller") then
+          component.os_rolldoorcontroller.close()
+        end
+      end
     end
   end
-else
-GUI.error("Вы не ввели данные.")
-end
+
 end
 
-function FBAPI.entitycheck()
-local component = require("component")
-if component.isAvailable("os_entdetector") then
-     entity = component.os_entdetector
-     entitycheck = true
-    elseif component.isAvailable("OSEntDetector") then
-     entity = component.OSEntDetector
-     entitycheck = true
+function FBAPI.cardwrite(name, password, block)
+
+  if name ~= "" and password ~= "" then
+
+    local component = require("component")
+
+    if component.isAvailable("OSCardWriter") then
+
+      local writer = component.OSCardWriter
+      local success = writer.write(password, name, block)
+      return "success"
+
+    elseif component.isAvailable("os_cardwriter") then
+
+      local writer = component.os_cardwriter
+      local success = writer.write(password, name, block)
+      return "success"
+
     else
-     entitycheck = false
+      return "block"
     end
-end
 
-
-
-function FBAPI.entitydetect()
-FBAPI.clearGlobal()
-FBAPI.entitycheck()
-local GUI = require("GUI")
-
-
-scan = entity.scanPlayers(10)
-for l,player in pairs(scan) do
-GUI.error(player.name)
-GUI.error(player.range)
-local resourcesPath = MineOSCore.getCurrentApplicationResourcesDirectory()
-file = io.open(resourcesPath .. "entitydetector.txt", w)
-file:write(playerName)
-file:close()
-end
+  else
+    return "settings"
+  end
 
 end
 
+function FBAPI.magread(password, side, sec, settings)
+
+  if password ~= "" and side and sec then
+
+    local component = require("component")
+    local event = require("event")
+
+    while true do
+      local output = { event.pull() }
+      if output[1] == "magData" then
+        if output[4] == password then
+
+          if settings["redstone"] == true and component.isAvailable("redstone") then
+            component.redstone.setOutput(side, 15)
+          end
+          if settings["doorcontroller"] == true and component.isAvailable("os_doorcontroller") then
+            component.os_doorcontroller.toggle()
+          end
+          if settings["rolldoorcontroller"] == true and component.isAvailable("os_rolldoorcontroller") then
+            component.os_rolldoorcontroller.toggle()
+          end
+
+          event.sleep(sec)
+
+        else
+          event.sleep(sec)
+        end
+
+          if settings["redstone"] == true and component.isAvailable("redstone") then
+            component.redstone.setOutput(side, 0)
+          end
+          if settings["doorcontroller"] == true and component.isAvailable("os_doorcontroller") then
+            component.os_doorcontroller.close()
+          end
+          if settings["rolldoorcontroller"] == true and component.isAvailable("os_rolldoorcontroller") then
+            component.os_rolldoorcontroller.close()
+          end
+
+      elseif output[1] == "key_down" and output[4] == 28 then
+        break
+      end
+    end
+
+  else
+    return "settings"
+  end
+
+end
 
 return FBAPI
