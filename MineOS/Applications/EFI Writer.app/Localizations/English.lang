@@ -1,0 +1,12 @@
+{
+	open = "Open",
+	close = "Close",
+	choose = "Choose",
+	flash = "Flash",
+	lock = "Lock writing",
+	BlockConnectCardWrite = "The card writer block is not connected",
+	eepromname = "EEPROM Name",
+	flashed = "Flashed EEPROM",
+	description = "Program for flash EEPROM via Card Writer from OpenSecurity mod",
+	texterror = "No file selected",
+}

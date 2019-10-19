@@ -1,0 +1,12 @@
+{
+	open = "Открыть",
+	close = "Закрыть",
+	choose = "Выбрать",
+	flash = "Прошить",
+	lock = "Блок. перезаписи",
+	BlockConnectCardWrite = "Не подключен блок программатора карт",
+	eepromname = "Название EEPROM",
+	flashed = "EEPROM Прошит",
+	description = "Программа для прошития EEPROM через Card Writer из мода OpenSecurity",
+	texterror = "Не выбран файл",
+}
