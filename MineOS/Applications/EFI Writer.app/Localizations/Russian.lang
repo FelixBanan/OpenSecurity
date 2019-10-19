@@ -7,6 +7,6 @@
 	BlockConnectCardWrite = "Не подключен блок программатора карт",
 	eepromname = "Название EEPROM",
 	flashed = "EEPROM Прошит",
-	description = "Программа для прошития EEPROM через Card Writer из мода OpenSecurity",
+	description = "Программа для прошивки EEPROM через Card Writer из мода OpenSecurity",
 	texterror = "Не выбран файл",
 }
